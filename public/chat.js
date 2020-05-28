@@ -1,23 +1,15 @@
 var messages = document.getElementById("sentMessages");
 const form = document.getElementById("form");
-
+var socket = io();
 (function(){
-    var socket = io();
+    
     form.addEventListener('submit', (event) => {
         //prevent the page from reloading
         event.preventDefault();
-        const messageToSaveAndDisplay = document.getElementById('messageInput').value;
+        const messageToSave = document.getElementById('messageInput').value;
 
         //send the message to the server
-        socket.emit("MessageSent", messageToSaveAndDisplay);
-
-        socket.on("MessageSaved", () => {
-            console.log("Adding recently saved message to chat window");
-            let li = document.createElement("li");
-            messages.appendChild(li).append(messageToSaveAndDisplay);
-        });
-
-
+        socket.emit("MessageSent", messageToSave);
 
         // reset the message to blank
         document.getElementById('messageInput').value = "";
@@ -25,7 +17,11 @@ const form = document.getElementById("form");
     });
 })();
 
-
+socket.on("MessageSaved", (messageObject) => {
+    console.log("Adding recently saved message to chat window");
+    let li = document.createElement("li");
+    messages.appendChild(li).append(messageObject.message);
+});
 
 /*
  --- Typing Indicator Section --- 
