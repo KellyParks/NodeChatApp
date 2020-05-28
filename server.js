@@ -19,42 +19,10 @@ app.use(express.static(__dirname + "/public"));
 const db = require("./dbConnection");
 var MessageModel = db.MessageModel;
 
-
-/*
-//listen for 'chat message' events
-socket.on("chat message", function(msg) {
-    //log them in the console
-    console.log("message: "  +  msg);
-    //broadcast message to everyone listening to port 500
-    socket.broadcast.emit("received", { message: msg });
-});
-
-//listen to 'connection' events
-socket.on("connection", (socket) => {
-    console.log("user connected");
-
-    //Someone is typing
-    socket.on("typing", (data) => {
-        socket.broadcast.emit("notifyTyping", {
-            user: data.user,
-            message: data.message,
-        });
-    });
-
-    //when soemone stops typing
-    socket.on("stopTyping", () => {
-        socket.broadcast.emit("notifyStopTyping");
-    });
-
-    socket.on("disconnect", () => {
-        console.log("user disconnected");
-    });
-});
-
-*/
-
+let numberOfConnections = 0
 io.on("connection", (socket) => {
     console.log("User connected");
+    numberOfConnections++;
 
     /* Once the user clicks Send, and the 'MessageSent' event is received,
     save the message in the DB, and emit a 'MessageSaved' event to signal 
@@ -72,6 +40,19 @@ io.on("connection", (socket) => {
             }
         });
       });
+
+      /* On disconnect, update the number of active connections. Once the
+      number of connections reaches 0, delete all the saved messages. Please
+      be aware refreshing the browser removes a connection and adds a new one. */
+      socket.on("disconnect", () => {
+        numberOfConnections--;
+        console.log("User disconnected. Total connections: " + numberOfConnections);
+        if(numberOfConnections === 0){
+            MessageModel.deleteMany({}, () => {
+                console.log("No more active connections. Deleted all documents.");
+            });
+        }
+    });
 });
 
 const port = 500;

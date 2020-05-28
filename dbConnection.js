@@ -11,7 +11,7 @@ const messageSchema = new Schema({
 var MessageModel = connection.model('Message', messageSchema);
 
 //Instead of requiring mongoose again in server.js I could just include what I need from it in the exports object here.
-//not sure if this is best practice though
+//not sure if this is best practice though. Probably should just create a models folder.
 module.exports = {
     MessageModel: MessageModel,
     connection: connection,

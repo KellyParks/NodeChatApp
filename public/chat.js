@@ -1,6 +1,8 @@
-var messages = document.getElementById("sentMessages");
+let messages = document.getElementById("sentMessages");
 const form = document.getElementById("form");
-var socket = io();
+
+let socket = io();
+
 (function(){
     
     form.addEventListener('submit', (event) => {
@@ -19,32 +21,11 @@ var socket = io();
 
 socket.on("MessageSaved", (messageObject) => {
     console.log("Adding recently saved message to chat window");
+    
+    let span = document.createElement("span");
+    span.textContent="Anon User: ";
+
     let li = document.createElement("li");
+    li.appendChild(span);
     messages.appendChild(li).append(messageObject.message);
 });
-
-/*
- --- Typing Indicator Section --- 
-let typing = document.getElementById("typing");
-
-//isTyping event
-let messageInput = document.getElementById("messageInput");
-messageInput.addEventListener("keypress", () => {
-    socket.emit("isTyping", { user: "Someone", message: "is typing..." });
-});
-
-//stopTyping event
-messageInput.addEventListener("keyup", () => {
-    socket.emit("stopTyping", "");
-});
-
-//listen for the notifyTyping event from server.js and update the view to let the other user know what someone is typing
-socket.on("notifyTyping", (data) => {
-    typing.innerText = data.user + " " + data.message;
-    console.log("notifying user that other person is typing: " + data.user + data.message);
-});
-
-socket.on("stopTyping", () => {
-    socket.broadcast.emit("notifyStopTyping");
-});
-*/
