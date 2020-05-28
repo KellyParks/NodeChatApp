@@ -15,7 +15,8 @@ app.use(bodyParser.urlencoded({extended: false})); //only allow strings and arra
 //serve a static file from the directory. __dirname is from Node
 app.use(express.static(__dirname + "/public")); 
 
-const dbConnection = require("./dbConnection");
+const db = require("./dbConnection");
+var MessageModel = db.MessageModel;
 
 
 /*
@@ -53,12 +54,23 @@ socket.on("connection", (socket) => {
 
 io.on("connection", (socket) => {
     console.log("User connected");
+
+    //Once the user clicks Send, save the message in the DB, and emit a "MessageSaved" event
     socket.on('MessageSent', (msg) => {
-        console.log('message: ' + msg);
+        let messageToSave = new MessageModel({message: msg});
+        MessageModel.create(messageToSave, (error, document) => {
+            if(error){
+                console.error("couldn't save message: " + document)
+            } else {
+                console.log("saved document: " + document);
+                socket.emit("MessageSaved", document);
+            }
+            
+            return db.connection.close();
+        });
       });
 });
 
-//listen to port 500
 const port = 500;
 http.listen(port, () => {
     console.log("connected to port: " + port);

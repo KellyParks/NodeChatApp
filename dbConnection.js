@@ -2,17 +2,17 @@ const mongoose = require("mongoose");
 mongoose.Promise = require("bluebird");
 
 const connectionString = 'mongodb+srv://sampleProject:summer2020@sampleproject-so3lj.mongodb.net/chatApp?retryWrites=true&w=majority';
-const db = mongoose.createConnection(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
-// const Schema = mongoose.Schema;
-// const messageSchema = new Schema({
-//     message: String,
-// });
-// const Message = db.model('Message', messageSchema);
-// const testMessage = new Message({message: 'This is a test message'});
+const connection = mongoose.createConnection(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Message.create(testMessage, function (error, document) {
-//     console.log(document);
-//     return db.close();
-// });
+const Schema = mongoose.Schema;
+const messageSchema = new Schema({
+    message: String,
+});
+var MessageModel = connection.model('Message', messageSchema);
 
-module.exports = db;
+//Instead of requiring mongoose again in server.js I could just include what I need from it in the exports object here.
+//not sure if this is best practice though
+module.exports = {
+    MessageModel: MessageModel,
+    connection: connection,
+};

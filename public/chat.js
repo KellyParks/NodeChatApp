@@ -1,4 +1,4 @@
-var messages = document.getElementById("messages");
+var messages = document.getElementById("sentMessages");
 const form = document.getElementById("form");
 
 (function(){
@@ -11,16 +11,21 @@ const form = document.getElementById("form");
         //send the message to the server
         socket.emit("MessageSent", messageToSaveAndDisplay);
 
-        // let li = document.createElement("li");
-        // messages.appendChild(li).append(messageToSaveAndDisplay);
-        // let span = document.createElement("span");
-        // messages.appendChild(span).append("By Anonymous: ");
+        socket.on("MessageSaved", () => {
+            console.log("Adding recently saved message to chat window");
+            let li = document.createElement("li");
+            messages.appendChild(li).append(messageToSaveAndDisplay);
+        });
 
-        // //reset the message to blank
-        //document.getElementById('messageInput').value = "";
+
+
+        // reset the message to blank
+        document.getElementById('messageInput').value = "";
         return false;
     });
 })();
+
+
 
 /*
  --- Typing Indicator Section --- 
