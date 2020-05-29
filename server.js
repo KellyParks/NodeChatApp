@@ -13,30 +13,46 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false})); //only allow strings and arrays
 //serve a static file from the directory. __dirname is from Node
-app.use(express.static(__dirname + "/public")); 
+app.use(express.static(__dirname + "/public/")); 
 
 //grab the connection and model info
 const db = require("./dbConnection");
 var MessageModel = db.MessageModel;
 
+//using to create a random username
+const fantasyNameGenerator = require("fantasy-name-generator");
+
+//keep track of the number of open connections
 let numberOfConnections = 0
+
 io.on("connection", (socket) => {
-    console.log("User connected");
+
     numberOfConnections++;
+
+    /* Set a random username for each user/connection. I like dwarf names, but to create
+    one from the fantasy-name-generator, a gender is required. This randomly chooses a 
+    gender, and obtains a dwarf name based on that random gender. */
+    const genders = ["female", "male"];
+    const randomGender = genders[Math.floor(Math.random() * genders.length)];
+    socket.username = fantasyNameGenerator.nameByRace("dwarf", { gender: randomGender });
+    console.log("User connected: " + socket.username);
+    socket.emit("UserNameSet", socket.username);
 
     /* Once the user clicks Send, and the 'MessageSent' event is received,
     save the message in the DB, and emit a 'MessageSaved' event to signal 
     that the UI should be updated with the recently-saved message. */
     socket.on("MessageSent", (msg) => {
-        console.log('called');
-        let messageToSave = new MessageModel({message: msg});
+        let messageToSave = new MessageModel({
+            user: socket.username,
+            message: msg
+        });
         MessageModel.create(messageToSave, (error, document) => {
             console.log('create called');
             if(error){
                 console.error("couldn't save message: " + document)
             } else {
                 console.log("saved document: " + document);
-                io.emit("MessageSaved", {message: msg});
+                io.emit("MessageSaved", document);
             }
         });
       });

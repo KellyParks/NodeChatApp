@@ -6,6 +6,7 @@ const connection = mongoose.createConnection(connectionString, { useNewUrlParser
 
 const Schema = mongoose.Schema;
 const messageSchema = new Schema({
+    user: String,
     message: String,
 });
 var MessageModel = connection.model('Message', messageSchema);

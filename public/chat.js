@@ -3,8 +3,12 @@ const form = document.getElementById("form");
 
 let socket = io();
 
+socket.on("UserNameSet", (username) => {
+    let currentUser = document.getElementById("currentUser");
+    currentUser.prepend(username + "*: ");
+});
+
 (function(){
-    
     form.addEventListener('submit', (event) => {
         //prevent the page from reloading
         event.preventDefault();
@@ -20,10 +24,10 @@ let socket = io();
 })();
 
 socket.on("MessageSaved", (messageObject) => {
-    console.log("Adding recently saved message to chat window");
+    console.log("Adding recently saved message to chat window: " + messageObject);
     
     let span = document.createElement("span");
-    span.textContent="Anon User: ";
+    span.textContent = messageObject.user + ': ';
 
     let li = document.createElement("li");
     li.appendChild(span);

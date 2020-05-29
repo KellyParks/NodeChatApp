@@ -2,7 +2,7 @@
 
 Note: This is incomplete and still a work in progress
 
-I wanted to try creating a project that was a little more complex than a CRUD app. This is an endeavour to build a real-time chat application using Node.js, Express, MongoDB and Socket.io. Most of the tutorials I've found for this type of project are incomplete or don't explain things very well, so I thought this would be a good exercise in breaking down a problem as well as learning how to use Node.js.
+I wanted to try creating a project that was a little more complex than a CRUD app. This is an endeavor to build a real-time chat application using Node.js, Express, MongoDB and Socket.io. Most of the tutorials I've found for this type of project are incomplete or don't explain things very well, so I thought this would be a good exercise in breaking down a problem as well as learning how to use Node.js.
 
 ![Chat App Demo](demoGifs/chatAppDemo.gif)
 
