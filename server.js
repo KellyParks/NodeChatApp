@@ -73,6 +73,15 @@ io.on("connection", (socket) => {
             });
         }
     });
+
+    /* Notify all other users that someone is typing/has stopped typing */
+    socket.on("isTyping", (typingUser) => {
+        socket.broadcast.emit("notifyTyping", typingUser);
+    });
+
+    socket.on("stoppedTyping", (notTypingUser) => {
+        socket.broadcast.emit("notifyStoppedTyping", notTypingUser);
+    });
 });
 
 const port = 500;
