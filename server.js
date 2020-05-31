@@ -47,10 +47,14 @@ io.on("connection", (socket) => {
             message: msg
         });
         MessageModel.create(messageToSave, (error, document) => {
-            console.log('create called');
             if(error){
-                console.error("couldn't save message: " + document)
+                /* Log the failure, and let only the sender know that
+                the message failed. */
+                console.error("failed to save message: " + document);
+                socket.emit("MessageSaveFailed", document);
             } else {
+                /* Log that the message was saved successfully, then let all
+                the other listeners know. */
                 console.log("saved document: " + document);
                 io.emit("MessageSaved", document);
             }

@@ -23,6 +23,18 @@ socket.on("UserNameSet", (username) => {
     });
 })();
 
+socket.on("MessageSaveFailed", (messageObject) => {
+    let span = document.createElement("span");
+    span.textContent = "The following message failed to save: ";
+
+    let li = document.createElement("li");
+    li.setAttribute('class', 'bg-warning');
+
+    li.appendChild(span);
+    
+    messages.appendChild(li).append(messageObject.message);
+});
+
 socket.on("MessageSaved", (messageObject) => {
     console.log("Adding recently saved message to chat window: " + messageObject);
     
