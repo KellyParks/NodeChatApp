@@ -88,3 +88,5 @@ const port = 500;
 http.listen(port, () => {
     console.log("connected to port: " + port);
 });
+
+module.exports = http;
