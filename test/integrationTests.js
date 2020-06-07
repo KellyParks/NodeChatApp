@@ -1,27 +1,31 @@
 const expect = require('chai').expect;
-const io = require('socket.io');
+const assert = require('chai').assert;
+var io = require('socket.io-client');
 
 describe('Socket Tests', () => {
-    let socket;
+    var socket;
     beforeEach(() => {
-        server = io().listen(500);
-        socket = new Socket(server);
-        socket.connect();
+        socket = io.connect('http://localhost:500', {
+            transports: ['websocket'],
+            'force new connection': true
+        });
     });
 
     it('should set random user name on connection', () => {
-        expect(socket).to.have.property('username');
+        socket.on('connection', (socket) => {
+            expect(socket.username).to.not.be.undefined;
+        });
     });
 
-    it('should save message on the MessageSent event', () => {
+    // it('should capture a message if the MessageSent event is emitted', () => {
         
-    });
+    // });
 
-    it('should notify other listeners if user is typing', () => {
+    // it('should notify other listeners if user is typing', () => {
         
-    });
+    // });
 
-    it('should notify other listeners if user has stopped typing', () => {
+    // it('should notify other listeners if user has stopped typing', () => {
         
-    });
+    // });
 })
