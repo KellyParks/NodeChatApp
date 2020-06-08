@@ -15,9 +15,8 @@ app.use(bodyParser.urlencoded({extended: false})); //only allow strings and arra
 //serve a static file from the directory. __dirname is from Node
 app.use(express.static(__dirname + "/public/")); 
 
-//grab the connection and model info
-const db = require("./dbConnection");
-var MessageModel = db.MessageModel;
+//grab the message model
+const Message = require("./Models/Message");
 
 //using to create a random username
 const fantasyNameGenerator = require("fantasy-name-generator");
@@ -42,11 +41,11 @@ io.on("connection", (socket) => {
     save the message in the DB, and emit a 'MessageSaved' event to signal 
     that the UI should be updated with the recently-saved message. */
     socket.on("MessageSent", (msg) => {
-        let messageToSave = new MessageModel({
+        let messageToSave = new Message({
             user: socket.username,
             message: msg
         });
-        MessageModel.create(messageToSave, (error, document) => {
+        Message.create(messageToSave, (error, document) => {
             if(error){
                 /* Log the failure, and let only the sender know that
                 the message failed. */
@@ -68,7 +67,7 @@ io.on("connection", (socket) => {
         numberOfConnections--;
         console.log("User disconnected. Total connections: " + numberOfConnections);
         if(numberOfConnections === 0){
-            MessageModel.deleteMany({}, () => {
+            Message.deleteMany({}, () => {
                 console.log("No more active connections. Deleted all documents.");
             });
         }
