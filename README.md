@@ -13,6 +13,6 @@ In the next steps, I'd like to set a random user name for each connection, so th
 # To Run
 Open a terminal in the root of the project, and run:
 `npm install`
-`node server.js`
+`node app.js`
 
 Open up two browser windows and navigate to `localhost:500` in both of them.
