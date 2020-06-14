@@ -1,8 +1,20 @@
 let messages = document.getElementById("sentMessages");
 const form = document.getElementById("form");
 
-let socket = io();
+form.addEventListener('submit', (event) => {
+    //prevent the page from reloading
+    event.preventDefault();
+    const messageToSave = document.getElementById('messageInput').value;
 
+    //send the message to the server
+    socket.emit("MessageSent", messageToSave);
+
+    // reset the message to blank
+    document.getElementById('messageInput').value = "";
+    return false;
+});
+
+let socket = io();
 let chatUsername = "";
 
 socket.on("UserNameSet", (username) => {
@@ -10,21 +22,6 @@ socket.on("UserNameSet", (username) => {
     let currentUser = document.getElementById("currentUser");
     currentUser.prepend(username + "*: ");
 });
-
-(function(){
-    form.addEventListener('submit', (event) => {
-        //prevent the page from reloading
-        event.preventDefault();
-        const messageToSave = document.getElementById('messageInput').value;
-
-        //send the message to the server
-        socket.emit("MessageSent", messageToSave);
-
-        // reset the message to blank
-        document.getElementById('messageInput').value = "";
-        return false;
-    });
-})();
 
 socket.on("MessageSaveFailed", (messageObject) => {
     let span = document.createElement("span");
