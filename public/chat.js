@@ -48,9 +48,13 @@ socket.on("MessageSaved", (messageObject) => {
 
 /* Typing Indicator Event Logic */
 
-/* It's a bit jolting on the UI to have the list of currently typing users updated so often.
-It should wait a few seconds after the keyup event before updating. Probably a good candidate for
-an observable instead. */
+function debounce(functionToExecute, duration) {
+    var timer;
+    return function() {
+      clearTimeout(timer);
+      timer = setTimeout(functionToExecute, duration)
+    }
+  }
 
 //isTyping event
 let messageInput = document.getElementById("messageInput");
@@ -59,9 +63,9 @@ messageInput.addEventListener("keypress", () => {
 });
 
 //stopTyping event
-messageInput.addEventListener("keyup", () => {
+messageInput.addEventListener("keyup", debounce(() => {
     socket.emit("stoppedTyping", chatUsername);
-});
+}, 400));
 
 let usersTyping = [];
 
